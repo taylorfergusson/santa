@@ -12,9 +12,6 @@ const EMPTY = {
   priority: null,
   notes: '',
   links: [''],
-  size: '',
-  colour: '',
-  variant: '',
   likes: '',
   example_links: [''],
   photos: [],
@@ -85,7 +82,7 @@ export default function ItemForm() {
       <div className="page form-page">
         <PageHeader title={title} fallback={listLink} />
         {whoFor}
-        <p className="form-question">What kind of item is it?</p>
+        <p className="form-question">What do you want?</p>
         <div className="type-choices">
           {Object.entries(TYPES).map(([value, { label, hint }]) => (
             <button key={value} className="type-choice" onClick={() => set('type', value)}>
@@ -123,9 +120,6 @@ export default function ItemForm() {
       notes: clean(form.notes),
       photos: form.photos,
       links: exact ? links : [],
-      size: exact ? clean(form.size) : null,
-      colour: exact ? clean(form.colour) : null,
-      variant: exact ? clean(form.variant) : null,
       likes: exact ? null : clean(form.likes),
       example_links: exact ? [] : examples,
     }
@@ -204,20 +198,6 @@ export default function ItemForm() {
               inputMode="url"
             />
           </Field>
-          <Field label="Size">
-            <input className="input" value={form.size} onChange={(e) => set('size', e.target.value)} />
-          </Field>
-          <Field label="Colour">
-            <input className="input" value={form.colour} onChange={(e) => set('colour', e.target.value)} />
-          </Field>
-          <Field label="Variant">
-            <input
-              className="input"
-              value={form.variant}
-              onChange={(e) => set('variant', e.target.value)}
-              placeholder="e.g. scent, model, style"
-            />
-          </Field>
         </>
       ) : (
         <>
@@ -242,7 +222,13 @@ export default function ItemForm() {
       )}
 
       <Field label="Notes">
-        <textarea className="input" rows={3} value={form.notes} onChange={(e) => set('notes', e.target.value)} />
+        <textarea
+          className="input"
+          rows={3}
+          value={form.notes}
+          onChange={(e) => set('notes', e.target.value)}
+          placeholder="Anything that helps, like size, colour, model, style or scent"
+        />
       </Field>
 
       {triedToSave && hasProblems && <p className="field-error">Fill in the missing bits above.</p>}
@@ -258,7 +244,7 @@ export default function ItemForm() {
             <>
               <p>{isSuggestion ? 'Delete this idea?' : 'Delete this item from your wishlist?'}</p>
               <div className="action-row">
-                <button className="btn btn-secondary" onClick={remove}>
+                <button className="btn btn-primary" onClick={remove}>
                   Yes, delete it
                 </button>
                 <button className="btn" onClick={() => setConfirmingDelete(false)}>
@@ -267,7 +253,7 @@ export default function ItemForm() {
               </div>
             </>
           ) : (
-            <button className="btn-link" onClick={() => setConfirmingDelete(true)}>
+            <button className="btn btn-block btn-danger" onClick={() => setConfirmingDelete(true)}>
               {isSuggestion ? 'Delete idea' : 'Delete item'}
             </button>
           )}

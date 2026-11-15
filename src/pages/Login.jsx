@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase.js'
 import { useAuth, logIn } from '../auth.jsx'
 import { SITE_TITLE, SITE_SUBTITLE } from '../config.js'
+import Snowfall from '../components/Snowfall.jsx'
 import Photo from '../components/Photo.jsx'
 import { BackIcon, DeleteIcon } from '../components/Icons.jsx'
 
@@ -28,6 +29,7 @@ export default function Login() {
 
   return (
     <div className="login-screen">
+      <Snowfall />
       <div className="page login">
         <h1 className="login-title">{SITE_TITLE}</h1>
         <p className="login-subtitle">{SITE_SUBTITLE}</p>
@@ -92,6 +94,7 @@ function PasscodePad({ person, onBack }) {
 
   return (
     <div className="login-screen">
+      <Snowfall />
       <div className="page login">
         <button className="back-button" onClick={onBack} aria-label="Back">
           <BackIcon />

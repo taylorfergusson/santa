@@ -2,8 +2,8 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { HomeIcon, FamilyIcon, PlusIcon, ShoppingIcon, MyListIcon } from './Icons.jsx'
 import { SITE_TITLE } from '../config.js'
 
-// Five tabs like Bunz: icons only, the active tab shows its label,
-// and a big yellow + in the middle for adding to your wishlist.
+// Five tabs: icons with labels underneath,
+// and a round + in the middle for adding to your wishlist.
 const TABS = [
   { to: '/', label: 'Home', Icon: HomeIcon },
   { to: '/family', label: 'Family', Icon: FamilyIcon },

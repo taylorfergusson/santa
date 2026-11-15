@@ -2,10 +2,11 @@
 import { supabase } from './supabase.js'
 
 // Keep these labels exactly as written, including capitalization.
+// label: used on item pages and the priority picker. heading: the section titles on lists.
 export const PRIORITIES = [
-  { value: 1, label: 'NEED SO BAD' },
-  { value: 2, label: 'want' },
-  { value: 3, label: 'nice to have' },
+  { value: 1, label: 'NEED SO BAD', heading: 'NEED SO BAD' },
+  { value: 2, label: 'want', heading: 'Want' },
+  { value: 3, label: 'nice to have', heading: 'Nice to Have' },
 ]
 export const priorityLabel = (value) => PRIORITIES.find((p) => p.value === value)?.label
 

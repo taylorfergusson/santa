@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth.jsx'
 import { supabase } from '../supabase.js'
 import {
@@ -12,15 +12,17 @@ import {
   loadItem,
   priorityLabel,
 } from '../items.js'
+import ItemActions from '../components/ItemActions.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import PhotoCarousel from '../components/PhotoCarousel.jsx'
 
 // One item: photos, details and one main action.
-//   Your own list: Edit
+//   Your own list: Edit and Delete
 //   Anyone else's list (incl. a profile you manage): the claim button
 export default function ItemDetail() {
   const { id } = useParams()
   const { me, people } = useAuth()
+  const navigate = useNavigate()
   const [item, setItem] = useState(undefined) // undefined = loading, null = not found
   const [error, setError] = useState('')
 
@@ -53,7 +55,14 @@ export default function ItemDetail() {
 
   return (
     <div className="page item-page">
-      <PageHeader fallback={listLink} />
+      <PageHeader
+        fallback={listLink}
+        place={{
+          label: isOwnList ? 'My Wishlist' : `${owner?.name}'s Wishlist`,
+          photo: owner?.photo_url ?? null,
+          to: listLink,
+        }}
+      />
       <PhotoCarousel photos={item.photos} />
 
       <div className="item-body">
@@ -61,7 +70,6 @@ export default function ItemDetail() {
         <div className="item-meta">
           {item.type === 'exact' && <span className="tag tag-exact">Exact</span>}
           <span className="item-priority">{priorityLabel(item.priority)}</span>
-          {!isOwnList && owner && <span className="muted">· {owner.name}'s wishlist</span>}
         </div>
         {item.is_suggestion && <p className="muted">An idea from family. {owner?.name} can't see this.</p>}
         {item.deleted_at && <p className="banner">This was removed from the wishlist after you claimed it.</p>}
@@ -71,19 +79,11 @@ export default function ItemDetail() {
         {claim.text && <p className="item-claim">{claim.text}</p>}
 
         {!isOwnList && <ClaimActions item={item} onChange={reload} />}
-        {canEdit && (
-          <Link to={`/item/${item.id}/edit`} className={`btn btn-block btn-large${isOwnList ? ' btn-primary' : ''}`}>
-            Edit
-          </Link>
-        )}
+        {canEdit && <ItemActions item={item} large onDeleted={() => navigate(listLink, { replace: true })} />}
 
         {item.type === 'exact' ? <ExactDetails item={item} /> : <FlexibleDetails item={item} isOwnList={isOwnList} />}
 
-        {item.notes && (
-          <Detail label="Notes">
-            <p className="pre-wrap">{item.notes}</p>
-          </Detail>
-        )}
+        {item.notes && <p className="pre-wrap item-description">{item.notes}</p>}
       </div>
     </div>
   )
@@ -98,6 +98,7 @@ export default function ItemDetail() {
 function ClaimActions({ item, onChange }) {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [sparkles, setSparkles] = useState(0) // bumps to replay the sparkle
   const myStage = item.status?.my_stage
   const othersClaimed = (item.status?.claim_count ?? 0) > (myStage ? 1 : 0)
 
@@ -110,12 +111,16 @@ function ClaimActions({ item, onChange }) {
     else if (error) setMessage('That didn\'t work. Check your connection and try again.')
     await onChange()
     setBusy(false)
+    return !error
   }
+
+  const celebrate = (ok) => ok && setSparkles((n) => n + 1)
 
   const claims = supabase.from('claims')
   // Only your own claim is visible to you, so these only ever touch yours
-  const claim = () => act(claims.insert({ item_id: item.id }))
-  const setStage = (stage) => act(claims.update({ stage }).eq('item_id', item.id))
+  const claim = () => act(claims.insert({ item_id: item.id })).then(celebrate)
+  const setStage = (stage) =>
+    act(claims.update({ stage }).eq('item_id', item.id)).then((ok) => stage === 'bought' && celebrate(ok))
   const release = () => act(claims.delete().eq('item_id', item.id))
 
   let buttons
@@ -150,13 +155,24 @@ function ClaimActions({ item, onChange }) {
   return (
     <div className="claim-actions">
       {buttons}
+      {sparkles > 0 && <Sparkle key={sparkles} />}
       {message && <p className="field-error" role="alert">{message}</p>}
     </div>
   )
 }
 
+// A small burst of brass dots from the middle of the claim button
+function Sparkle() {
+  return (
+    <span className="sparkle" aria-hidden="true">
+      {Array.from({ length: 10 }, (_, i) => (
+        <i key={i} style={{ '--angle': `${i * 36}deg`, '--distance': `${i % 2 ? 44 : 64}px` }} />
+      ))}
+    </span>
+  )
+}
+
 function ExactDetails({ item }) {
-  const facts = [['Size', item.size], ['Colour', item.colour], ['Variant', item.variant]].filter(([, v]) => v)
   return (
     <>
       {item.links.length > 0 && (
@@ -167,16 +183,6 @@ function ExactDetails({ item }) {
             </a>
           ))}
         </div>
-      )}
-      {facts.length > 0 && (
-        <dl className="facts">
-          {facts.map(([label, value]) => (
-            <div key={label}>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
       )}
     </>
   )

@@ -55,7 +55,8 @@ function replaceInFile(relativePath, pattern, replacement) {
   writeFileSync(url, readFileSync(url, 'utf8').replace(pattern, replacement))
 }
 replaceInFile('src/config.js', /export const YEAR = \d{4}/, `export const YEAR = ${newYear}`)
-replaceInFile('index.html', /Family Santa Wishlist \d{4}/, `Family Santa Wishlist ${newYear}`)
+// Global (g): the title also appears in the link-preview tags
+replaceInFile('index.html', /Family Santa Wishlist \d{4}/g, `Family Santa Wishlist ${newYear}`)
 console.log(`✓ Site title now says ${newYear}`)
 
 console.log('\nDone. Run `npm run build`, then commit and push so the new year shows on the site.')

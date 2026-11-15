@@ -1,0 +1,206 @@
+<!doctype html>
+<!--
+  Source for public/og-image.jpg, the picture shown when the link is shared in
+  Messenger, iMessage, Android Messages, etc. To regenerate it after a restyle:
+  open this file in Chrome at 1200 x 630 and screenshot it (or ask Claude Code).
+  The family photos come from photos/ (not in the repo). Note the finished
+  image is public, even though the site isn't.
+-->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "Berkshire Swash";
+    src: url("../node_modules/@fontsource/berkshire-swash/files/berkshire-swash-latin-400-normal.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Inter";
+    font-weight: 100 900;
+    src: url("../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+  }
+  :root {
+    --cream: #f4eee2;
+    --brass: #b8893b;
+    --brass-light: #e3c27a;
+    --red: #b3121f;
+    --red-light: #e0444f;
+    --evergreen: #1f3d2b;
+    --evergreen-light: #4f7a5f;
+    --silver: #a9b0b8;
+    --silver-light: #eef0f2;
+  }
+  html, body { margin: 0; }
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 520px 420px at 870px 330px, rgba(227, 194, 122, 0.22), transparent 70%),
+      linear-gradient(180deg, #17301f 0%, #0f2117 60%, #0b1811 100%);
+    color: var(--cream);
+    font-family: "Inter", sans-serif;
+  }
+  /* Red ribbon down the left edge with a gold trim */
+  .ribbon {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 18px;
+    background: linear-gradient(180deg, var(--red), #860c16);
+    box-shadow: 3px 0 0 var(--brass-light);
+  }
+  .tree {
+    position: absolute;
+    left: 870px;
+    bottom: -30px;
+    height: 640px;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 50px rgba(227, 194, 122, 0.25));
+  }
+  .ornament {
+    position: absolute;
+    width: var(--s);
+    height: var(--s);
+    margin: calc(var(--s) / -2);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.75), transparent 28%),
+      radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.3), transparent 60%),
+      linear-gradient(145deg, var(--a), var(--b));
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5);
+  }
+  .ornament.photo {
+    padding: 4px;
+    background: linear-gradient(145deg, var(--a), var(--b));
+  }
+  .ornament.photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .ornament.photo::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.45), transparent 35%);
+  }
+  .ornament::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(var(--s) * -0.1);
+    width: calc(var(--s) * 0.26);
+    height: calc(var(--s) * 0.14);
+    transform: translateX(-50%);
+    border-radius: 3px 3px 1px 1px;
+    background: linear-gradient(90deg, var(--brass), var(--brass-light), var(--brass));
+  }
+  .gold { --a: var(--brass-light); --b: var(--brass); }
+  .red { --a: var(--red-light); --b: var(--red); }
+  .silver { --a: var(--silver-light); --b: var(--silver); }
+  .green { --a: var(--evergreen-light); --b: var(--evergreen); }
+  .star {
+    position: absolute;
+    left: 870px;
+    top: 4px;
+    width: 64px;
+    height: 64px;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 18px rgba(255, 220, 140, 0.9));
+  }
+  .snow { position: absolute; inset: 0; pointer-events: none; }
+  .snow i {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .text {
+    position: absolute;
+    left: 86px;
+    top: 0;
+    bottom: 0;
+    width: 560px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .eyebrow {
+    margin: 0 0 22px;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+  }
+  h1 {
+    margin: 0;
+    font-family: "Berkshire Swash", serif;
+    font-weight: 400;
+    font-size: 104px;
+    line-height: 1.02;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  }
+  .tagline {
+    margin: 30px 0 0;
+    font-size: 28px;
+    line-height: 1.4;
+    color: rgba(244, 238, 226, 0.85);
+  }
+  .rule {
+    width: 120px;
+    height: 3px;
+    margin-top: 34px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--red), var(--brass-light));
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="tree" src="../src/assets/tree.webp" alt="" />
+    <svg class="star" viewBox="0 0 24 24"><path fill="#f3d27e" d="M12 1.8l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9l7.1-.6z"/></svg>
+
+    <!-- Family on the tree, like the Family screen: Laura on top, then alphabetical -->
+    <span class="ornament photo gold" style="--s:84px; left:870px; top:170px"><img src="../photos/laura.png" alt="" /></span>
+    <span class="ornament photo red" style="--s:84px; left:815px; top:295px"><img src="../photos/eric.png" alt="" /></span>
+    <span class="ornament photo silver" style="--s:84px; left:925px; top:295px"><img src="../photos/jadyn.png" alt="" /></span>
+    <span class="ornament photo green" style="--s:84px; left:760px; top:420px"><img src="../photos/jaisley.png" alt="" /></span>
+    <span class="ornament photo gold" style="--s:84px; left:870px; top:420px"><img src="../photos/jenn.png" alt="" /></span>
+    <span class="ornament photo red" style="--s:84px; left:980px; top:420px"><img src="../photos/jordan.png" alt="" /></span>
+    <span class="ornament photo silver" style="--s:84px; left:740px; top:548px"><img src="../photos/nick.png" alt="" /></span>
+    <span class="ornament photo red" style="--s:84px; left:870px; top:548px"><img src="../photos/steph.png" alt="" /></span>
+    <span class="ornament photo gold" style="--s:84px; left:1000px; top:548px"><img src="../photos/taylor.png" alt="" /></span>
+
+    <div class="snow" id="snow"></div>
+    <div class="ribbon"></div>
+
+    <div class="text">
+      <p class="eyebrow">Fergusson Extended Universe</p>
+      <h1>Family Santa Wishlist</h1>
+    </div>
+  </div>
+  <script>
+    // Static snow at three depths (fixed seed, so every render looks the same)
+    let seed = 12
+    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+    const snow = document.getElementById('snow')
+    const layers = [
+      { n: 110, min: 1.5, max: 3, blur: 0, alpha: 0.75 },
+      { n: 40, min: 3.5, max: 5.5, blur: 0.4, alpha: 0.85 },
+      { n: 9, min: 10, max: 16, blur: 4, alpha: 0.45 },
+    ]
+    for (const l of layers) {
+      for (let i = 0; i < l.n; i++) {
+        const s = l.min + rand() * (l.max - l.min)
+        const flake = document.createElement('i')
+        flake.style.cssText = `width:${s}px;height:${s}px;left:${rand() * 1200}px;top:${rand() * 630}px;opacity:${l.alpha * (0.6 + rand() * 0.4)};filter:blur(${l.blur}px)`
+        snow.appendChild(flake)
+      }
+    }
+  </script>
+</body>
+</html>

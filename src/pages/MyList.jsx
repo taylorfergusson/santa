@@ -19,12 +19,16 @@ export default function MyList() {
   const [waiting, setWaiting] = useState(0)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    setItems(null)
-    setError('')
+  const reload = () =>
     loadList(profile.id)
       .then(setItems)
       .catch(() => setError("Couldn't load the wishlist. Check your connection and try again."))
+
+  useEffect(() => {
+    setItems(null)
+    setError('')
+    reload()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile.id])
 
   const ownItems = items?.filter((i) => !i.is_suggestion) ?? []
@@ -69,7 +73,7 @@ export default function MyList() {
           </p>
         )}
 
-        <ItemGrid items={ownItems} showClaims={isManaged} />
+        <ItemGrid items={ownItems} showClaims={isManaged} onDeleted={reload} />
 
         {isManaged && suggestions.length > 0 && (
           <section className="priority-group">

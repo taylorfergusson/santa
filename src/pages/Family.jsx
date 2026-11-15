@@ -7,6 +7,7 @@ import Photo from '../components/Photo.jsx'
 import Hero from '../components/Hero.jsx'
 import treePhoto from '../assets/tree.webp'
 import Notices from '../components/Notices.jsx'
+import Snowfall from '../components/Snowfall.jsx'
 
 // Ornament colours cycle so neighbours look different
 const ORNAMENT_STYLES = ['gold', 'red', 'silver', 'green']
@@ -55,6 +56,8 @@ export default function Family() {
               </div>
             ))}
           </div>
+          {/* After the tree so it falls in front of the tree photo, behind the ornaments */}
+          <Snowfall />
         </div>
       </div>
     </>

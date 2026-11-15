@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import Photo from './Photo.jsx'
 import { BackIcon } from './Icons.jsx'
 
 // Goes back if there's somewhere to go back to, otherwise to `fallback`
@@ -18,7 +19,21 @@ export function BackButton({ fallback }) {
 }
 
 // Back arrow at the top left, like Marketplace, with an optional title.
-export default function PageHeader({ title, fallback = '/' }) {
+// `place` shows where you are, centred at the top (e.g. "Jordan's Wishlist"
+// with their photo): { label, photo, to }. Tapping it goes to that list.
+export default function PageHeader({ title, fallback = '/', place }) {
+  if (place) {
+    return (
+      <div className="page-header page-header-place">
+        <BackButton fallback={fallback} />
+        <Link to={place.to} className="place">
+          {place.photo !== undefined && <Photo src={place.photo} className="place-photo" />}
+          <span className="place-label">{place.label}</span>
+        </Link>
+        <span aria-hidden="true" />
+      </div>
+    )
+  }
   return (
     <div className="page-header">
       <BackButton fallback={fallback} />
