@@ -112,6 +112,7 @@
   /* Sizes */
   --tap-target: 48px;           /* minimum touch size */
   --tab-bar-height: 72px;
+  --tab-bar-bottom-padding: 16px; /* extra space under the tab bar so it clears the iPhone home bar */
   --nav-add-size: 58px;         /* the big yellow + */
   --nav-icon-size: 28px;
   --sidebar-width: 260px;

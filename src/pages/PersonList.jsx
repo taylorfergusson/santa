@@ -53,10 +53,6 @@ export default function PersonList() {
 
         <section className="ideas">
           <h2 className="section-title">Secret ideas from family</h2>
-          <p className="muted ideas-note">
-            Think {person.name} would love something that's not on their wishlist? Add it here. {person.name} can't see
-            these, but everyone else can.
-          </p>
           {suggestions.length > 0 && (
             <div className="card-grid">
               {suggestions.map((item) => (

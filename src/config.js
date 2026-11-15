@@ -14,5 +14,9 @@ export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Ro1vUW6oIRJbcPCvLB2nMw_s
 // stored in the repo; it's set with `npm run set-passcode`.
 export const PASSWORD_PREFIX = 'feu-'
 
+// This person sits at the top of the Christmas tree for everyone else.
+// They see their own tree in plain alphabetical order.
+export const TREE_TOPPER = 'Laura'
+
 // Login emails are placeholders, e.g. taylor@feu.local
 export const emailFor = (slug) => `${slug}@feu.local`

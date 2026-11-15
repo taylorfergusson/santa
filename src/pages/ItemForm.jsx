@@ -103,7 +103,6 @@ export default function ItemForm() {
   const problems = {
     name: !form.name.trim() && 'Give it a name',
     priority: !form.priority && (isSuggestion ? 'Pick how much they would want it' : 'Pick how much you want it'),
-    links: form.type === 'exact' && !links.length && 'Add the product link',
   }
   const hasProblems = Object.values(problems).some(Boolean)
   const show = (field) => triedToSave && problems[field] && <p className="field-error">{problems[field]}</p>
@@ -191,20 +190,19 @@ export default function ItemForm() {
       </Field>
 
       <Field label="Photos">
-        <PhotoPicker photos={form.photos} onChange={(photos) => set('photos', photos)} showCover />
+        <PhotoPicker photos={form.photos} onChange={(photos) => set('photos', photos)} showCover pasteAnywhere />
       </Field>
 
       {form.type === 'exact' ? (
         <>
-          <Field label="Product link" required>
+          <Field label="Product link">
             <ListInput
               values={form.links}
               onChange={(v) => set('links', v)}
-              placeholder="Paste the link"
+              placeholder="Paste the link if you have it"
               addLabel="+ Add another link"
               inputMode="url"
             />
-            {show('links')}
           </Field>
           <Field label="Size">
             <input className="input" value={form.size} onChange={(e) => set('size', e.target.value)} />

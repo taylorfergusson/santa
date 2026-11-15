@@ -50,7 +50,7 @@ h3 {
 .app {
   min-height: 100dvh;
   /* Leave room for the bottom tab bar and the phone's home bar */
-  padding-bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--tab-bar-height) + var(--tab-bar-bottom-padding) + env(safe-area-inset-bottom));
 }
 
 .page {
@@ -143,7 +143,7 @@ h3 {
 }
 
 /* ---------- Bottom tab bar (phone and tablet), Bunz style ----------
-   Big icons, only the active tab shows its label, yellow + in the middle. */
+   Big icons with labels underneath, yellow + in the middle. */
 
 .tab-bar {
   position: fixed;
@@ -157,7 +157,8 @@ h3 {
   border-top: 1px solid var(--color-border);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   box-shadow: var(--shadow-raised);
-  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: 0 env(safe-area-inset-right) calc(var(--tab-bar-bottom-padding) + env(safe-area-inset-bottom))
+    env(safe-area-inset-left);
 }
 
 .tab-bar .nav-link {
@@ -170,10 +171,6 @@ h3 {
 }
 
 .tab-bar .nav-label {
-  display: none;
-}
-
-.tab-bar .nav-link.active .nav-label {
   display: block;
 }
 
@@ -1209,6 +1206,12 @@ textarea.input {
   line-height: 1;
 }
 
+.photo-picker-drop {
+  outline: var(--border-width) dashed var(--color-accent);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius);
+}
+
 .photo-add {
   border: var(--border-width) dashed var(--color-accent);
   border-radius: var(--radius);
@@ -1464,6 +1467,7 @@ textarea.input {
 
 .ornament-count {
   display: block;
+  min-height: 2.4em; /* two lines, reserved while counts load so the tree doesn't jump */
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-muted);
@@ -1509,48 +1513,6 @@ textarea.input {
 
 /* ---------- Home ---------- */
 
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
-}
-
-.stat {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--space-3);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface-2);
-  text-decoration: none;
-  transition: transform 0.15s;
-}
-
-.stat:active {
-  transform: scale(0.97);
-}
-
-.stat-label {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-muted);
-}
-
-.stat-value {
-  font-size: var(--font-size-hero);
-  line-height: 1.1;
-  color: var(--color-accent);
-  font-weight: var(--font-weight-bold);
-}
-
-.stat-detail {
-  font-size: var(--font-size-xs);
-  line-height: 1.3;
-}
-
 .center-row {
   display: flex;
   justify-content: center;
@@ -1573,10 +1535,6 @@ textarea.input {
 
 .ideas {
   margin-top: var(--space-6);
-}
-
-.ideas-note {
-  margin: 0 0 var(--space-4);
 }
 
 .ideas-button {

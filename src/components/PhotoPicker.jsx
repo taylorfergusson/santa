@@ -1,17 +1,31 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { uploadPhoto } from '../items.js'
 import Photo from './Photo.jsx'
 
+// Only image files from a file picker, drop or paste
+const imagesOnly = (files) => [...files].filter((f) => f.type.startsWith('image/'))
+
 // Thumbnails plus an "Add photos" button. Photos upload as soon as they're picked.
+// Images can also be dragged onto the photos, or pasted.
 // With showCover, the first photo is labelled as the cover (items).
-export default function PhotoPicker({ photos, onChange, showCover = false }) {
+// With pasteAnywhere, pasting an image anywhere on the page adds it (the item form).
+// Without it, pasting only works while typing in the box next to the photos (e.g. a question).
+export default function PhotoPicker({ photos, onChange, showCover = false, pasteAnywhere = false }) {
   const inputRef = useRef(null)
+  const wrapRef = useRef(null)
   const [uploading, setUploading] = useState(0)
+  const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
 
+  // Keep the latest photos and onChange for the paste listener and slow uploads
+  const latest = useRef({ photos, onChange })
+  latest.current = { photos, onChange }
+
   const addFiles = async (files) => {
+    files = imagesOnly(files)
+    if (!files.length) return
     setError('')
-    setUploading(files.length)
+    setUploading((n) => n + files.length)
     const added = []
     for (const file of files) {
       try {
@@ -21,11 +35,41 @@ export default function PhotoPicker({ photos, onChange, showCover = false }) {
       }
       setUploading((n) => n - 1)
     }
-    onChange([...photos, ...added])
+    latest.current.onChange([...latest.current.photos, ...added])
   }
 
+  // Paste an image (e.g. a copied screenshot). Pasting plain text still works as normal.
+  useEffect(() => {
+    const onPaste = (e) => {
+      const files = imagesOnly(e.clipboardData?.files ?? [])
+      if (!files.length) return
+      const box = wrapRef.current?.parentElement
+      if (!pasteAnywhere && !(box && box.contains(e.target))) return
+      e.preventDefault()
+      addFiles(files)
+    }
+    document.addEventListener('paste', onPaste)
+    return () => document.removeEventListener('paste', onPaste)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pasteAnywhere])
+
   return (
-    <div>
+    <div
+      ref={wrapRef}
+      className={dragging ? 'photo-picker-drop' : undefined}
+      onDragOver={(e) => {
+        e.preventDefault()
+        setDragging(true)
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setDragging(false)
+      }}
+      onDrop={(e) => {
+        e.preventDefault()
+        setDragging(false)
+        addFiles(e.dataTransfer.files)
+      }}
+    >
       <div className="photo-picker">
         {photos.map((src, i) => (
           <div key={src} className="photo-thumb">
@@ -56,7 +100,7 @@ export default function PhotoPicker({ photos, onChange, showCover = false }) {
         multiple
         hidden
         onChange={(e) => {
-          addFiles([...e.target.files])
+          addFiles(e.target.files)
           e.target.value = ''
         }}
       />
