@@ -1,0 +1,149 @@
+/*
+  Theme: every colour, font, size, radius and spacing value lives here.
+  To restyle the app, edit this file only.
+  Look: festive red / yellow / green, inspired by reference/image.png.
+*/
+
+:root {
+  /* Brand colours */
+  --red: #d7192d;               /* banners, secondary buttons */
+  --red-dark: #a8101f;          /* sidebar */
+  --yellow: #ffc81e;            /* main action buttons */
+  --yellow-dark: #f0b400;
+  --green: #17603a;             /* "Exact" tag, bought, done states */
+  --pink: #fdecef;              /* card backgrounds */
+  --pink-border: #f7d2d9;
+  --mint: #eef6ec;              /* photo panels on item pages */
+  --gold: #d9a520;
+  --gold-light: #f7d877;
+  --silver: #b9c0ca;
+  --silver-light: #f1f3f6;
+  --red-light: #ff6b78;
+  --green-light: #5fbf7f;
+
+  /* Family Christmas tree */
+  --tree-string: rgba(255, 255, 255, 0.9); /* ornament ribbons */
+  --ornament-size: 92px;
+  --ornament-size-large: 124px; /* tablet and desktop */
+  --card-avatar-size: 36px;     /* owner face on Home cards */
+
+  /* Roles (what the components use) */
+  --color-bg: #fffbfa;          /* page background */
+  --color-surface: #ffffff;     /* cards, bars, inputs */
+  --color-surface-2: var(--pink);
+  --color-placeholder: #f6dde2; /* missing photos */
+  --color-border: var(--pink-border);
+  --color-text: #2a1d1d;
+  --color-text-muted: #76666a;
+  --color-primary: var(--yellow);
+  --color-on-primary: #2a1d1d;
+  --color-primary-pressed: var(--yellow-dark);
+  --color-secondary: var(--red);
+  --color-on-secondary: #ffffff;
+  --color-accent: var(--red);   /* active tab, headings, focus */
+  --color-done: var(--green);
+  --color-on-done: #ffffff;
+  --color-hero: var(--red);     /* red banner at the top of main screens */
+  --color-on-hero: #ffffff;
+  --color-hero-glass: rgba(255, 255, 255, 0.18); /* translucent white on red */
+  --color-sidebar: var(--red-dark);
+  --color-banner: #fff4cc;      /* quiet notices */
+  --color-photo-panel: var(--mint);
+
+  /* Falling snow on red areas */
+  --snow:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 68% 9%, rgba(255, 255, 255, 0.75) 0 2px, transparent 3px),
+    radial-gradient(circle at 38% 55%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 85% 62%, rgba(255, 255, 255, 0.85) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 22% 82%, rgba(255, 255, 255, 0.7) 0 2px, transparent 3px),
+    radial-gradient(circle at 55% 30%, rgba(255, 255, 255, 0.5) 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 92%, rgba(255, 255, 255, 0.6) 0 1.5px, transparent 2.5px);
+  --snow-size: 140px 140px;
+
+  /* Snow that falls on a card's photo while you hover over it. Each layer moves
+     down by exactly its own tile height, so the loop is seamless. */
+  --card-snowflake: #ffffff;
+  --card-snowflake-edge: rgba(255, 255, 255, 0.45); /* soft glow around each flake */
+  --card-snow-tint: rgba(20, 30, 60, 0.28);         /* darkens the photo so the snow pops */
+  --card-snow:
+    radial-gradient(circle at 15% 20%, var(--card-snowflake) 0 4px, var(--card-snowflake-edge) 5px, transparent 7px),
+    radial-gradient(circle at 70% 55%, var(--card-snowflake) 0 5px, var(--card-snowflake-edge) 6.5px, transparent 8.5px),
+    radial-gradient(circle at 40% 80%, var(--card-snowflake) 0 3px, var(--card-snowflake-edge) 4px, transparent 6px),
+    radial-gradient(circle at 85% 15%, var(--card-snowflake) 0 3.5px, var(--card-snowflake-edge) 4.5px, transparent 6px),
+    radial-gradient(circle at 30% 45%, var(--card-snowflake) 0 2px, var(--card-snowflake-edge) 3px, transparent 4px),
+    radial-gradient(circle at 60% 10%, var(--card-snowflake) 0 2.5px, var(--card-snowflake-edge) 3.5px, transparent 5px);
+  --card-snow-size: 50px 50px, 80px 80px, 65px 65px, 100px 100px, 35px 35px, 45px 45px;
+  --card-snow-start: 0 0, 20px 10px, 10px 30px, 35px 50px, 5px 5px, 15px 20px;
+  --card-snow-end: 0 50px, 20px 90px, 10px 95px, 35px 150px, 5px 40px, 15px 65px;
+  --card-snow-speed: 2.5s;
+
+  /* Greyed-out / claimed items */
+  --opacity-dimmed: 0.45;
+
+  /* Type */
+  --font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Berkshire Swash", Georgia, serif; /* headings and big buttons */
+  --font-size-xs: 13px;
+  --font-size-sm: 15px;
+  --font-size-base: 17px;
+  --font-size-lg: 20px;
+  --font-size-xl: 28px;
+  --font-size-section: 22px;      /* section headings like NEED SO BAD */
+  --font-size-hero: 38px;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --line-height: 1.45;
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 24px;
+  --radius-round: 999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Sizes */
+  --tap-target: 48px;           /* minimum touch size */
+  --tab-bar-height: 72px;
+  --nav-add-size: 58px;         /* the big yellow + */
+  --nav-icon-size: 28px;
+  --sidebar-width: 260px;
+  --content-max-width: 1100px;
+  --shadow: 0 2px 8px rgba(120, 20, 30, 0.08);
+  --shadow-raised: 0 6px 18px rgba(120, 20, 30, 0.2);
+  --focus-ring: 0 0 0 3px rgba(215, 25, 45, 0.25);
+  --border-width: 2px;
+
+  /* Login */
+  --login-card-min-width: 140px;  /* photo cards on the "Who are you?" screen */
+  --login-max-width: 900px;
+  --passcode-photo-size: 96px;
+  --passcode-dot-size: 16px;
+  --keypad-key-size: 76px;
+  --font-size-keypad: 30px;
+
+  /* Item pages */
+  --item-page-max-width: 720px;
+  --photo-thumb-size: 88px;
+
+  /* Shopping list */
+  --shopping-thumb-size: 64px;
+  --shopping-person-photo-size: 40px;
+
+  /* Icons */
+  --icon-size: 26px;
+  --icon-size-lg: 30px;
+
+  /* Card grid columns: phone / tablet / desktop / wide desktop */
+  --grid-cols-phone: 2;
+  --grid-cols-tablet: 3;
+  --grid-cols-desktop: 4;
+  --grid-cols-wide: 5;
+}

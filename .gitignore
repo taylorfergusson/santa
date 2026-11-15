@@ -1,0 +1,11 @@
+node_modules
+dist
+.DS_Store
+
+# Secrets and admin-only files: never commit these
+.env
+.env.*
+!.env.example
+family.json
+photos/
+items/

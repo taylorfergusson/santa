@@ -1,0 +1,30 @@
+{
+  "name": "santa",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sync-family": "node scripts/sync-family.mjs",
+    "set-passcode": "node scripts/set-passcode.mjs",
+    "reset-christmas": "node scripts/reset-christmas.mjs"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "dependencies": {
+    "@fontsource/berkshire-swash": "^5.3.0",
+    "@fontsource/lato": "^5.3.0",
+    "@supabase/supabase-js": "^2.119.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "sharp": "^0.35.5",
+    "vite": "^8.3.8"
+  }
+}
