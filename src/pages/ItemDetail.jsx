@@ -7,7 +7,6 @@ import {
   claimInfo,
   dismissNotices,
   editedAfterClaim,
-  isUrl,
   linkLabel,
   loadItem,
   priorityLabel,
@@ -81,7 +80,7 @@ export default function ItemDetail() {
         {!isOwnList && <ClaimActions item={item} onChange={reload} />}
         {canEdit && <ItemActions item={item} large onDeleted={() => navigate(listLink, { replace: true })} />}
 
-        {item.type === 'exact' ? <ExactDetails item={item} /> : <FlexibleDetails item={item} isOwnList={isOwnList} />}
+        {item.type === 'exact' && <ExactDetails item={item} />}
 
         {item.notes && <p className="pre-wrap item-description">{item.notes}</p>}
       </div>
@@ -185,38 +184,6 @@ function ExactDetails({ item }) {
         </div>
       )}
     </>
-  )
-}
-
-function FlexibleDetails({ item, isOwnList }) {
-  return (
-    <>
-      {item.likes && (
-        <Detail label={isOwnList ? 'What I like about it' : 'What they like about it'}>
-          <p className="pre-wrap">{item.likes}</p>
-        </Detail>
-      )}
-      {item.example_links.length > 0 && (
-        <Detail label="Examples">
-          <ul className="example-list">
-            {item.example_links.map((entry) => (
-              <li key={entry}>
-                {isUrl(entry) ? <a href={entry} target="_blank" rel="noreferrer">{linkLabel(entry)}</a> : entry}
-              </li>
-            ))}
-          </ul>
-        </Detail>
-      )}
-    </>
-  )
-}
-
-function Detail({ label, children }) {
-  return (
-    <section className="detail">
-      <h2 className="detail-label">{label}</h2>
-      {children}
-    </section>
   )
 }
 

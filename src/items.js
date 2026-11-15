@@ -120,6 +120,18 @@ export async function countWaitingQuestions(profileIds) {
   return count ?? 0
 }
 
+// The unanswered questions waiting on these profiles (yours + managed), oldest first
+export async function loadWaitingQuestions(profileIds) {
+  const { data, error } = await supabase
+    .from('questions_public')
+    .select('*')
+    .in('profile_id', profileIds)
+    .is('answer', null)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
 // ---------- Links ----------
 
 const looksLikeDomain = (text) => /^[^\s]+\.[a-z]{2,}(\/|$)/i.test(text)

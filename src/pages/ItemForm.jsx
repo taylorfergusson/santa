@@ -12,9 +12,13 @@ const EMPTY = {
   priority: null,
   notes: '',
   links: [''],
-  likes: '',
-  example_links: [''],
   photos: [],
+}
+
+// Older Flexible items kept "What I like about it" and "Examples" in their own
+// fields. Fold them into the notes when editing so nothing is lost on save.
+function foldIntoNotes(item) {
+  return [item.notes, item.likes, ...(item.example_links ?? [])].filter((text) => text?.trim()).join('\n')
 }
 
 // Add an item (/add, or /add?for=jaisley for managers), suggest a secret idea for
@@ -59,7 +63,7 @@ export default function ItemForm() {
           ...EMPTY,
           ...Object.fromEntries(Object.keys(EMPTY).map((key) => [key, item[key] ?? EMPTY[key]])),
           links: item.links.length ? item.links : [''],
-          example_links: item.example_links.length ? item.example_links : [''],
+          notes: foldIntoNotes(item),
         })
       })
       .catch(() => setLoadError("Couldn't load this item. Check your connection and try again."))
@@ -96,7 +100,6 @@ export default function ItemForm() {
   }
 
   const links = form.links.map(normalizeLink).filter(Boolean)
-  const examples = form.example_links.map(normalizeLink).filter(Boolean)
   const problems = {
     name: !form.name.trim() && 'Give it a name',
     priority: !form.priority && (isSuggestion ? 'Pick how much they would want it' : 'Pick how much you want it'),
@@ -120,8 +123,8 @@ export default function ItemForm() {
       notes: clean(form.notes),
       photos: form.photos,
       links: exact ? links : [],
-      likes: exact ? null : clean(form.likes),
-      example_links: exact ? [] : examples,
+      likes: null,
+      example_links: [],
     }
 
     const { error } = isEdit
@@ -187,38 +190,16 @@ export default function ItemForm() {
         <PhotoPicker photos={form.photos} onChange={(photos) => set('photos', photos)} showCover pasteAnywhere />
       </Field>
 
-      {form.type === 'exact' ? (
-        <>
-          <Field label="Product link">
-            <ListInput
-              values={form.links}
-              onChange={(v) => set('links', v)}
-              placeholder="Paste the link if you have it"
-              addLabel="+ Add another link"
-              inputMode="url"
-            />
-          </Field>
-        </>
-      ) : (
-        <>
-          <Field label={isSuggestion ? "Why they'd like it" : 'What I like about it'}>
-            <textarea
-              className="input"
-              rows={3}
-              value={form.likes}
-              onChange={(e) => set('likes', e.target.value)}
-              placeholder="e.g. woodsy scents, not too oily"
-            />
-          </Field>
-          <Field label="Example links or brands">
-            <ListInput
-              values={form.example_links}
-              onChange={(v) => set('example_links', v)}
-              placeholder="A link or a brand name"
-              addLabel="+ Add another"
-            />
-          </Field>
-        </>
+      {form.type === 'exact' && (
+        <Field label="Product link">
+          <ListInput
+            values={form.links}
+            onChange={(v) => set('links', v)}
+            placeholder="Paste the link if you have it"
+            addLabel="+ Add another link"
+            inputMode="url"
+          />
+        </Field>
       )}
 
       <Field label="Notes">
@@ -299,7 +280,7 @@ function Field({ label, required, children }) {
   )
 }
 
-// A list of text boxes with "+ Add another" (product links, example brands).
+// A list of text boxes with "+ Add another" (product links).
 function ListInput({ values, onChange, placeholder, addLabel, inputMode }) {
   const update = (index, value) => onChange(values.map((v, i) => (i === index ? value : v)))
   const removeAt = (index) => onChange(values.length > 1 ? values.filter((_, i) => i !== index) : [''])

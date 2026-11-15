@@ -64,7 +64,38 @@ export default function Questions({ profile, onLoad }) {
   )
 }
 
-function Question({ question: q, canAnswer, onChange, onPhoto }) {
+// Home page box: unanswered questions on your profile (and any you manage),
+// answerable right there. Each one drops off the list once it's answered.
+export function WaitingQuestions({ questions, onChange }) {
+  const { me, people } = useAuth()
+  const [photo, setPhoto] = useState(null)
+  const nameOf = (id) => people.find((p) => p.id === id)?.name
+
+  return (
+    <section className="waiting-questions">
+      <h2 className="section-title">Questions</h2>
+      <p className="waiting-questions-intro">
+        {questions.length === 1 ? 'Someone has a question' : `${questions.length} questions are waiting`}. Answer
+        so they know what to get!
+      </p>
+      <ul className="question-list">
+        {questions.map((q) => (
+          <Question
+            key={q.id}
+            question={q}
+            forName={q.profile_id === me.id ? null : nameOf(q.profile_id)}
+            canAnswer
+            onChange={onChange}
+            onPhoto={setPhoto}
+          />
+        ))}
+      </ul>
+      <Lightbox src={photo} onClose={() => setPhoto(null)} />
+    </section>
+  )
+}
+
+function Question({ question: q, forName, canAnswer, onChange, onPhoto }) {
   const [answering, setAnswering] = useState(false)
 
   const remove = async () => {
@@ -75,6 +106,7 @@ function Question({ question: q, canAnswer, onChange, onPhoto }) {
 
   return (
     <li className="question">
+      {forName && <p className="question-for">For {forName}</p>}
       <p className="question-body">
         <span className="question-mark">Q</span>
         {q.body}

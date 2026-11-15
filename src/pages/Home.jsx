@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth.jsx'
 import { SITE_TITLE } from '../config.js'
-import { loadOthersItems } from '../items.js'
+import { loadOthersItems, loadWaitingQuestions } from '../items.js'
 import Hero from '../components/Hero.jsx'
 import FeedPost from '../components/FeedPost.jsx'
 import Notices from '../components/Notices.jsx'
+import { WaitingQuestions } from '../components/Questions.jsx'
 
 const POST_COUNT = 10 // posts shown in the feed
 const GROUP_HOURS = 3 // items one person adds within this many hours become one post
@@ -24,11 +25,23 @@ function toPosts(items) {
   return posts
 }
 
-// Home: any notices, then a feed of what everyone else has added lately.
+// Home: any notices, then either questions waiting for your answer or, once
+// there are none, a feed of what everyone else has added lately.
 export default function Home() {
-  const { me, people } = useAuth()
+  const { me, managed, people } = useAuth()
   const [items, setItems] = useState(null)
+  const [waiting, setWaiting] = useState(null) // unanswered questions on you + managed profiles
   const [error, setError] = useState('')
+
+  const profileIds = [me.id, ...managed.map((p) => p.id)].join(',')
+  const loadWaiting = () =>
+    loadWaitingQuestions(profileIds.split(','))
+      .catch(() => [])
+      .then(setWaiting)
+
+  useEffect(() => {
+    loadWaiting()
+  }, [profileIds]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     loadOthersItems(me.id)
@@ -44,9 +57,10 @@ export default function Home() {
       <Hero eyebrow={SITE_TITLE} title={`Hi ${me.name}!`} />
       <div className="page">
         <Notices />
-        {error && <p className="banner">{error}</p>}
-        {items && !items.length && <p className="empty">Nobody has added anything yet.</p>}
-        {posts.length > 0 && (
+        {waiting?.length > 0 && <WaitingQuestions questions={waiting} onChange={loadWaiting} />}
+        {waiting?.length === 0 && error && <p className="banner">{error}</p>}
+        {waiting?.length === 0 && items && !items.length && <p className="empty">Nobody has added anything yet.</p>}
+        {waiting?.length === 0 && posts.length > 0 && (
           <section className="feed">
             <h2 className="section-title">Newly added</h2>
             {posts.map((post) => (
