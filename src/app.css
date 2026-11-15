@@ -2193,11 +2193,6 @@ textarea.input {
   margin-top: var(--space-3);
 }
 
-.waiting-questions-intro {
-  margin: 0;
-  color: var(--color-text-muted);
-}
-
 .question-for {
   margin: 0 0 var(--space-2);
   font-size: var(--font-size-xs);
@@ -2259,12 +2254,6 @@ textarea.input {
   margin-top: var(--space-3);
   padding-top: var(--space-3);
   border-top: var(--border-width) solid var(--color-border);
-}
-
-.question-waiting {
-  margin: var(--space-3) 0 0;
-  color: var(--color-text-muted);
-  font-style: italic;
 }
 
 .question-photos {

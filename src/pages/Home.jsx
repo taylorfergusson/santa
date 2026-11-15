@@ -25,8 +25,8 @@ function toPosts(items) {
   return posts
 }
 
-// Home: any notices, then either questions waiting for your answer or, once
-// there are none, a feed of what everyone else has added lately.
+// Home: any notices, any questions waiting for your answer, then a feed of
+// what everyone else has added lately.
 export default function Home() {
   const { me, managed, people } = useAuth()
   const [items, setItems] = useState(null)
@@ -58,9 +58,9 @@ export default function Home() {
       <div className="page">
         <Notices />
         {waiting?.length > 0 && <WaitingQuestions questions={waiting} onChange={loadWaiting} />}
-        {waiting?.length === 0 && error && <p className="banner">{error}</p>}
-        {waiting?.length === 0 && items && !items.length && <p className="empty">Nobody has added anything yet.</p>}
-        {waiting?.length === 0 && posts.length > 0 && (
+        {error && <p className="banner">{error}</p>}
+        {items && !items.length && <p className="empty">Nobody has added anything yet.</p>}
+        {posts.length > 0 && (
           <section className="feed">
             <h2 className="section-title">Newly added</h2>
             {posts.map((post) => (

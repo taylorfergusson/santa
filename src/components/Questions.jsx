@@ -74,10 +74,6 @@ export function WaitingQuestions({ questions, onChange }) {
   return (
     <section className="waiting-questions">
       <h2 className="section-title">Questions</h2>
-      <p className="waiting-questions-intro">
-        {questions.length === 1 ? 'Someone has a question' : `${questions.length} questions are waiting`}. Answer
-        so they know what to get!
-      </p>
       <ul className="question-list">
         {questions.map((q) => (
           <Question
@@ -129,9 +125,7 @@ function Question({ question: q, forName, canAnswer, onChange, onPhoto }) {
           </p>
           <PhotoRow photos={q.answer_photos} onPhoto={onPhoto} />
         </div>
-      ) : (
-        <p className="question-waiting">Waiting for an answer</p>
-      )}
+      ) : null}
 
       {!answering && (
         <div className="question-actions">
