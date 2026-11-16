@@ -18,7 +18,6 @@
   --ink-muted: #6e675e;
   --hairline: #e3dccf;          /* 1px borders */
   --evergreen: #1f3d2b;         /* main colour */
-  --evergreen-pressed: #16301f;
   --evergreen-tint: #e4ece5;
   --brass: #b8893b;             /* small highlights */
   --brass-light: #e3c27a;
@@ -30,8 +29,6 @@
   --red-tint: #f9e4e2;
   --red-light: #e0444f;
   --cranberry: #8f2630;
-  --cranberry-light: #c4545d;
-  --cranberry-tint: #f5e3e2;
   --silver: #a9b0b8;
   --silver-light: #eef0f2;
   --evergreen-light: #4f7a5f;
@@ -56,7 +53,6 @@
   --color-secondary: var(--paper-2);        /* quiet buttons */
   --color-on-secondary: var(--ink);
   --color-accent: var(--red);               /* active tab, links, claim status */
-  --color-highlight: var(--brass);          /* small festive details */
   --color-festive: var(--red);              /* NEED SO BAD, questions */
   --color-hero: linear-gradient(165deg, var(--red) 0%, var(--red-deep) 100%); /* top banners */
   --color-on-hero: var(--cream);
@@ -67,7 +63,7 @@
   --color-on-night: var(--cream);
   --color-glass: rgba(255, 253, 249, 0.1);   /* translucent on the night background */
   --color-glass-border: rgba(255, 253, 249, 0.16);
-  --color-bar: rgba(255, 253, 249, 0.86);    /* frosted tab bar */
+  --color-bar: var(--white);                 /* tab bar */
   --color-banner: var(--brass-tint);         /* quiet notices */
   --color-photo-panel: var(--paper-2);
   --color-error: var(--cranberry);
@@ -109,7 +105,9 @@
     radial-gradient(2.4px 2.4px at 74% 90%, var(--snow-flake) 45%, var(--snow-glow) 75%, transparent),
     radial-gradient(2.0px 2.0px at 77% 76%, var(--snow-flake) 45%, var(--snow-glow) 75%, transparent);
   --snow-far-size: 120px 130px;
-  --snow-far-end: 120px 130px;      /* one tile across and down, so the loop is seamless */
+  --snow-far-end: 120px 130px;      /* one tile across and down, so the loop is seamless (x can be negative) */
+  --snow-far-tile-width: 120px;
+  --snow-far-tile-height: 130px;
   --snow-mid:
     radial-gradient(4.5px 4.5px at 50% 15%, var(--snow-flake) 40%, var(--snow-glow) 70%, transparent),
     radial-gradient(4.3px 4.3px at 11% 75%, var(--snow-flake) 40%, var(--snow-glow) 70%, transparent),
@@ -121,12 +119,16 @@
     radial-gradient(4.0px 4.0px at 66% 46%, var(--snow-flake) 40%, var(--snow-glow) 70%, transparent);
   --snow-mid-size: 170px 190px;
   --snow-mid-end: -170px 190px;
+  --snow-mid-tile-width: 170px;
+  --snow-mid-tile-height: 190px;
   --snow-near:
     radial-gradient(11.9px 11.9px at 39% 80%, rgba(255, 255, 255, 0.7) 35%, transparent),
     radial-gradient(12.9px 12.9px at 18% 68%, rgba(255, 255, 255, 0.7) 35%, transparent),
     radial-gradient(10.7px 10.7px at 46% 22%, rgba(255, 255, 255, 0.7) 35%, transparent);
   --snow-near-size: 260px 280px;
   --snow-near-end: 260px 280px;
+  --snow-near-tile-width: 260px;
+  --snow-near-tile-height: 280px;
   --snow-far-speed: 9s;   /* seconds to fall one tile */
   --snow-mid-speed: 5.5s;
   --snow-near-speed: 3.4s;
@@ -213,4 +215,42 @@
   --grid-cols-tablet: 3;
   --grid-cols-desktop: 4;
   --grid-cols-wide: 5;
+}
+
+/* Home countdown: the same winter night as the Family tree, with a moon */
+:root {
+  --countdown-sky: var(--night);
+  --countdown-moon: radial-gradient(circle at 40% 38%, #f8efd6 0%, #ecdcae 70%, #e3c27a 100%);
+  --countdown-moon-glow: rgba(227, 194, 122, 0.14);
+  --countdown-silhouette: #0b1811;
+  --countdown-text: var(--cream);
+  --countdown-gold: var(--brass-light);
+  --candy-cane: repeating-linear-gradient(-45deg, var(--red) 0 8px, var(--white) 8px 16px);
+  --candy-cane-width: 8px;
+  --font-size-countdown: 88px;
+
+  /* Cardi raffle on Home: cranberry, so it doesn't blend into the countdown */
+  --raffle-bg:
+    radial-gradient(ellipse 70% 60% at 80% 30%, rgba(227, 194, 122, 0.14), transparent 70%),
+    linear-gradient(165deg, #6e1c27 0%, #4a1119 100%);
+  --raffle-gift: var(--evergreen-light);
+  --raffle-gift-inside: #c9a46a;   /* brown cardboard under ripped paper */
+  --raffle-cat-pupil: #11180c;
+  /* Wrapping paper scraps */
+  --wrap-stripe: repeating-linear-gradient(45deg, var(--red) 0 3px, var(--white) 3px 6px);
+  --wrap-dots: radial-gradient(circle, var(--brass-light) 1.2px, transparent 1.6px) 0 0 / 5px 5px, var(--evergreen-light);
+  --wrap-green: var(--evergreen-light);
+  --wrap-gold: var(--brass-light);
+  --wrap-cream: var(--cream);
+  --wrap-red: repeating-linear-gradient(-30deg, var(--red-light) 0 4px, var(--red) 4px 8px);
+  --raffle-cat: var(--white);
+  --raffle-cat-eye: #6f8f3a;
+  --raffle-cat-width: 190px;
+  --font-size-raffle: 44px;
+  --raffle-face-size: 28px;
+
+  /* Gag gift box on the Shopping list */
+  --gag-bg: var(--brass-tint);
+  --gag-border: var(--brass-light);
+  --gag-text: var(--brass-ink);
 }

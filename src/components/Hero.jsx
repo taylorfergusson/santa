@@ -3,7 +3,7 @@ import { BackButton } from './PageHeader.jsx'
 
 // Red banner with gently falling snow at the top of the main screens.
 // `back` shows a back arrow (pass the fallback path); children go under the title.
-export default function Hero({ eyebrow, title, back, photo, children }) {
+export default function Hero({ title, back, photo, children }) {
   return (
     <header className="hero">
       <Snowfall />
@@ -11,10 +11,7 @@ export default function Hero({ eyebrow, title, back, photo, children }) {
         {back && <BackButton fallback={back} />}
         <div className="hero-heading">
           {photo}
-          <div>
-            {eyebrow && <p className="hero-eyebrow">{eyebrow}</p>}
-            <h1 className="hero-title">{title}</h1>
-          </div>
+          <h1 className="hero-title">{title}</h1>
         </div>
         {children}
       </div>

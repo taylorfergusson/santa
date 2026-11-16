@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth.jsx'
-import { SITE_TITLE } from '../config.js'
 import { loadOthersItems, loadWaitingQuestions } from '../items.js'
 import Hero from '../components/Hero.jsx'
 import FeedPost from '../components/FeedPost.jsx'
 import Notices from '../components/Notices.jsx'
+import Countdown from '../components/Countdown.jsx'
+import Raffle from '../components/Raffle.jsx'
 import { WaitingQuestions } from '../components/Questions.jsx'
 
 const POST_COUNT = 10 // posts shown in the feed
@@ -25,7 +26,7 @@ function toPosts(items) {
   return posts
 }
 
-// Home: any notices, any questions waiting for your answer, then a feed of
+// Home: any notices, the Christmas countdown, the Cardi raffle, any questions waiting for your answer, then a feed of
 // what everyone else has added lately.
 export default function Home() {
   const { me, managed, people } = useAuth()
@@ -54,9 +55,11 @@ export default function Home() {
 
   return (
     <>
-      <Hero eyebrow={SITE_TITLE} title={`Hi ${me.name}!`} />
+      <Hero title={`Hi ${me.name}!`} />
       <div className="page">
         <Notices />
+        <Countdown />
+        <Raffle />
         {waiting?.length > 0 && <WaitingQuestions questions={waiting} onChange={loadWaiting} />}
         {error && <p className="banner">{error}</p>}
         {items && !items.length && <p className="empty">Nobody has added anything yet.</p>}

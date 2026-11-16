@@ -8,8 +8,8 @@ const TABS = [
   { to: '/', label: 'Home', Icon: HomeIcon },
   { to: '/family', label: 'Family', Icon: FamilyIcon },
   { to: '/add', label: 'Add to my wishlist', Icon: PlusIcon, add: true },
-  { to: '/shopping', label: 'Shopping list', Icon: ShoppingIcon },
-  { to: '/me', label: 'My Wishlist', Icon: MyListIcon },
+  { to: '/shopping', label: 'Shopping', Icon: ShoppingIcon },
+  { to: '/me', label: 'My List', Icon: MyListIcon },
 ]
 
 function NavLinks() {

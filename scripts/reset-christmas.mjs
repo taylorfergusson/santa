@@ -1,6 +1,6 @@
 // npm run reset-christmas
-// Run each January to start a fresh year. Clears all claims, suggestions and
-// notices, permanently removes deleted items, optionally removes bought items,
+// Run each January to start a fresh year. Clears all claims, suggestions,
+// notices and Cardi raffle guesses, permanently removes deleted items, optionally removes bought items,
 // and updates the year in the site title.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { YEAR } from '../src/config.js'
@@ -20,7 +20,7 @@ if (!Number.isInteger(newYear) || newYear < 2000 || newYear > 3000) {
 const clearBought = await confirm('Also remove items that were bought from everyone\'s lists?')
 
 console.log('\nThis will:')
-console.log('  • remove every claim, secret suggestion and notice')
+console.log('  • remove every claim, secret suggestion, notice and raffle guess')
 console.log('  • permanently remove items people deleted')
 if (clearBought) console.log('  • remove every item someone marked as bought')
 console.log(`  • change the site title year to ${newYear}`)
@@ -42,6 +42,9 @@ console.log('✓ Cleared claims')
 
 check(await admin.from('notices').delete().not(...ALL), 'Clearing notices')
 console.log('✓ Cleared notices')
+
+check(await admin.from('guesses').delete().not('person_id', 'is', null), 'Clearing raffle guesses')
+console.log('✓ Cleared Cardi raffle guesses')
 
 check(await admin.from('items').delete().eq('is_suggestion', true), 'Clearing suggestions')
 console.log('✓ Cleared secret suggestions')

@@ -97,6 +97,15 @@ create table if not exists public.questions (
 );
 create index if not exists questions_profile_idx on public.questions (profile_id);
 
+-- The Cardi raffle: one guess per person at how many presents Jenn has to
+-- re-wrap because of her cat. Guesses stay secret; the app only shows who
+-- has entered (raffle_entrants). Set through set_guess().
+create table if not exists public.guesses (
+  person_id uuid primary key default current_person_id() references people (id) on delete cascade,
+  guess int not null check (guess between 0 and 999),
+  updated_at timestamptz not null default now()
+);
+
 
 -- ---------------------------------------------------------------------
 -- Helper functions (used by the policies so they stay readable)
@@ -145,6 +154,7 @@ alter table public.items enable row level security;
 alter table public.claims enable row level security;
 alter table public.notices enable row level security;
 alter table public.questions enable row level security;
+alter table public.guesses enable row level security;
 
 -- people: readable by logged-in family members, writable by nobody (scripts only)
 drop policy if exists "people: family can read" on public.people;
@@ -219,6 +229,12 @@ drop policy if exists "claims: release own" on public.claims;
 create policy "claims: release own" on public.claims
   for delete to authenticated
   using (claimer_id = current_person_id());
+
+-- guesses: you only ever see your own number
+drop policy if exists "guesses: read own" on public.guesses;
+create policy "guesses: read own" on public.guesses
+  for select to authenticated
+  using (person_id = current_person_id());
 
 -- notices: only the recipient can read them and mark them seen
 drop policy if exists "notices: recipient can read" on public.notices;
@@ -394,6 +410,26 @@ begin
 end;
 $$;
 
+-- Enter or change your Cardi raffle guess. Jenn can't enter: it's her cat.
+create or replace function public.set_guess(new_guess int)
+returns void
+language plpgsql security definer set search_path = public
+as $$
+begin
+  if current_person_id() is null then
+    raise exception 'Not logged in';
+  end if;
+  if (select slug from people where id = current_person_id()) = 'jenn' then
+    raise exception 'Jenn can''t enter the Cardi raffle';
+  end if;
+
+  insert into guesses (person_id, guess)
+  values (current_person_id(), new_guess)
+  on conflict (person_id) do update
+    set guess = excluded.guess, updated_at = now();
+end;
+$$;
+
 -- Ask an anonymous question on someone's profile (not your own).
 create or replace function public.ask_question(target_profile uuid, question text, question_photos text[] default '{}')
 returns uuid
@@ -494,6 +530,13 @@ from questions q
 where q.deleted_at is null
   and current_person_id() is not null;
 
+-- Who has entered the Cardi raffle (never their numbers).
+create or replace view public.raffle_entrants
+with (security_invoker = false) as
+select person_id
+from guesses
+where current_person_id() is not null;
+
 -- The login screen runs before anyone is logged in, so it needs names and
 -- photos of everyone who can log in. Managed profiles are left out.
 create or replace view public.login_people
@@ -508,9 +551,9 @@ where auth_user_id is not null;
 -- get the login screen view and nothing else.
 -- ---------------------------------------------------------------------
 
-revoke all on public.people, public.items, public.claims, public.notices, public.questions
+revoke all on public.people, public.items, public.claims, public.notices, public.questions, public.guesses
   from anon, authenticated;
-revoke all on public.claim_status, public.questions_public, public.login_people
+revoke all on public.claim_status, public.questions_public, public.login_people, public.raffle_entrants
   from anon, authenticated;
 
 grant select on public.people to authenticated;
@@ -530,7 +573,9 @@ grant update (stage) on public.claims to authenticated;
 grant select on public.notices to authenticated;
 grant update (seen_at) on public.notices to authenticated;
 
-grant select on public.claim_status, public.questions_public to authenticated;
+grant select on public.guesses to authenticated;
+
+grant select on public.claim_status, public.questions_public, public.raffle_entrants to authenticated;
 grant select on public.login_people to anon, authenticated;
 
 revoke execute on all functions in schema public from public, anon, authenticated;
@@ -542,7 +587,8 @@ grant execute on function
   public.delete_item(uuid),
   public.ask_question(uuid, text, text[]),
   public.answer_question(uuid, text, text[]),
-  public.delete_question(uuid)
+  public.delete_question(uuid),
+  public.set_guess(int)
   to authenticated;
 
 

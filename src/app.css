@@ -50,14 +50,12 @@ h3 {
 
 /* Shared look for every big serif heading */
 .hero-title,
-.page-title,
 .page-header-title,
 .sidebar-title,
 .login-title,
 .login-name,
 .ornament-name,
-.shopping-person h2,
-.person-card-name {
+.shopping-person h2 {
   font-family: var(--font-display);
   font-weight: var(--font-weight-display);
   letter-spacing: var(--tracking-display);
@@ -92,11 +90,6 @@ h3 {
   padding-top: var(--space-5);
 }
 
-.page-title {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--space-4);
-}
-
 /* ---------- Hero: red banner with falling snow and a gold ribbon edge ---------- */
 
 .hero {
@@ -120,15 +113,6 @@ h3 {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-}
-
-.hero-eyebrow {
-  margin: 0 0 var(--space-2);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--brass-light);
 }
 
 .hero-title {
@@ -178,7 +162,7 @@ h3 {
 }
 
 /* ---------- Bottom tab bar (phone and tablet) ----------
-   Frosted bar, icons with labels underneath, round + in the middle. */
+   Solid bar, icons with labels underneath, round + in the middle. */
 
 .tab-bar {
   position: fixed;
@@ -189,8 +173,6 @@ h3 {
   display: flex;
   align-items: center;
   background: var(--color-bar);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
   border-top: var(--border-width) solid var(--color-border);
   padding: 0 env(safe-area-inset-right) calc(var(--tab-bar-bottom-padding) + env(safe-area-inset-bottom))
     env(safe-area-inset-left);
@@ -432,11 +414,21 @@ h3 {
 }
 
 .snowfall i {
+  /* Each layer is drawn once, one tile bigger than the box (above and to
+     both sides), then slid down and across by exactly one tile so the loop
+     is seamless. Sliding a drawn layer is cheap; redrawing it every frame
+     (the old background-position approach) wasn't. */
   position: absolute;
-  inset: -12px;
+  top: calc(-1 * var(--snow-dy) - 12px);
+  bottom: -12px;
+  left: calc(-1 * var(--snow-w) - 12px);
+  right: calc(-1 * var(--snow-w) - 12px);
+  will-change: transform;
 }
 
 .snowfall i:nth-child(1) {
+  --snow-w: var(--snow-far-tile-width);
+  --snow-dy: var(--snow-far-tile-height);
   background: var(--snow-far);
   background-size: var(--snow-far-size);
   opacity: 0.8;
@@ -446,6 +438,8 @@ h3 {
 }
 
 .snowfall i:nth-child(2) {
+  --snow-w: var(--snow-mid-tile-width);
+  --snow-dy: var(--snow-mid-tile-height);
   background: var(--snow-mid);
   background-size: var(--snow-mid-size);
   animation:
@@ -454,6 +448,8 @@ h3 {
 }
 
 .snowfall i:nth-child(3) {
+  --snow-w: var(--snow-near-tile-width);
+  --snow-dy: var(--snow-near-tile-height);
   background: var(--snow-near);
   background-size: var(--snow-near-size);
   filter: blur(2px);
@@ -518,20 +514,21 @@ h3 {
   }
 }
 
-/* Fall by exactly one tile (sizes in theme.css), drifting a tile sideways */
+/* Slide by exactly one tile (sizes in theme.css), down and a tile sideways.
+   `translate` for the fall and `transform` for the drift, so the two combine. */
 @keyframes snow-fall-far {
-  from { background-position: 0 0; }
-  to { background-position: var(--snow-far-end); }
+  from { translate: 0 0; }
+  to { translate: var(--snow-far-end); }
 }
 
 @keyframes snow-fall-mid {
-  from { background-position: 0 0; }
-  to { background-position: var(--snow-mid-end); }
+  from { translate: 0 0; }
+  to { translate: var(--snow-mid-end); }
 }
 
 @keyframes snow-fall-near {
-  from { background-position: 0 0; }
-  to { background-position: var(--snow-near-end); }
+  from { translate: 0 0; }
+  to { translate: var(--snow-near-end); }
 }
 
 @keyframes snow-drift {
@@ -594,11 +591,6 @@ h3 {
 
 .card.dimmed .card-status {
   color: var(--color-text-muted);
-}
-
-.person-card-name {
-  font-size: var(--font-size-lg);
-  text-align: center;
 }
 
 /* ---------- Buttons: evergreen (main), paper (secondary), outline (default) ---------- */
@@ -1202,6 +1194,79 @@ h3 {
   height: var(--icon-size-lg);
 }
 
+/* The passcode screen always fits on one screen with no scrolling.
+   The keypad takes whatever height is left and sizes its keys to fit;
+   on short screens the photo and spacing shrink too. */
+.passcode-screen {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.passcode-screen .login {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+}
+
+.passcode-screen .back-button {
+  flex: none;
+}
+
+.passcode-screen .passcode-header {
+  margin-top: 0;
+}
+
+.passcode-screen .passcode-photo {
+  width: clamp(48px, 13dvh, var(--passcode-photo-size));
+  height: clamp(48px, 13dvh, var(--passcode-photo-size));
+}
+
+.passcode-screen .passcode-dots {
+  margin-top: clamp(var(--space-3), 4dvh, var(--space-6));
+}
+
+.passcode-screen .passcode-message {
+  margin: clamp(var(--space-1), 1.5dvh, var(--space-3)) 0;
+}
+
+.keypad-area {
+  flex: 1;
+  min-height: 0;
+  container-type: size;
+}
+
+.passcode-screen .keypad {
+  --key-gap: clamp(var(--space-2), 2cqh, var(--space-4));
+  --keypad-key-size: clamp(36px, min((100cqh - 3 * var(--key-gap)) / 4, (100cqw - 2 * var(--space-5)) / 3), 76px);
+  gap: var(--key-gap) var(--space-5);
+}
+
+.passcode-screen .keypad-key {
+  font-size: min(var(--font-size-keypad), calc(var(--keypad-key-size) * 0.38));
+}
+
+/* Phone on its side: photo and dots on the left, keypad on the right */
+@media (orientation: landscape) and (max-height: 500px) {
+  .passcode-screen .login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto 1fr;
+    column-gap: var(--space-5);
+    padding-top: calc(var(--space-3) + env(safe-area-inset-top));
+  }
+
+  .passcode-screen .login > * {
+    grid-column: 1;
+  }
+
+  .passcode-screen .keypad-area {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+}
+
 /* ---------- Item detail ---------- */
 
 .item-page,
@@ -1302,31 +1367,6 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-}
-
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3) var(--space-6);
-  margin: 0;
-  padding: var(--space-4);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-}
-
-.facts dt {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.facts dd {
-  margin: 0;
-  font-weight: var(--font-weight-medium);
 }
 
 .claim-actions {
@@ -1746,24 +1786,64 @@ textarea.input {
 
 /* ---------- Family: photo ornaments on a Christmas tree at night ---------- */
 
+/* The whole Family page fits on one screen with no scrolling: the tree takes
+   whatever height is left under the banner (and above the tab bar on phones),
+   and the ornaments size themselves from that space. */
+.family-screen {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--tab-bar-height) - var(--tab-bar-bottom-padding) - env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+.family-screen .hero {
+  flex: none;
+}
+
+.family-screen .page {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
 /* Dark night panel. On narrow phones it runs edge to edge and the tree's
    lower branches run off the sides; on tablets it becomes a rounded card. */
 .tree-wrap {
+  --ornament-max: var(--ornament-size);
+  --tag-height: 38px;    /* name + one line of counts */
+  --tree-padding: var(--space-3);
   position: relative;
+  flex: 1;
+  min-height: 0;
   overflow: clip;
   margin: 0 calc(-1 * var(--space-4));
   background: var(--night);
   color: var(--color-on-night);
+  container-type: size;
 }
 
+/* Ornament size: as big as fits both the height (rows) and the width (widest row).
+   A row is ribbon (0.18) + ball (1) - tag overlap (0.1) = 1.08 balls, plus the cap and tag. */
 .tree {
+  --row-height: calc((100cqh - 2 * var(--tree-padding)) / var(--rows));
+  --fit-height: calc((var(--row-height) - 6px - var(--tag-height)) / 1.08);
+  --fit-width: calc((100cqw - var(--space-4)) / var(--cols) - var(--space-4));
+  --ornament-size: clamp(32px, min(var(--fit-height), var(--fit-width)), var(--ornament-max));
   position: relative;
-  max-width: 560px;
+  height: 100%;
+  max-width: 680px;
   margin: 0 auto;
-  padding: var(--space-6) 0 calc(var(--space-6) * 2);
+  padding: var(--tree-padding) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-/* The tree photo keeps its shape and is as tall as the rows of ornaments */
+/* The tree photo keeps its shape and is as tall as the panel */
 .tree-photo {
   position: absolute;
   top: 0;
@@ -1782,7 +1862,6 @@ textarea.input {
   display: flex;
   justify-content: center;
   gap: var(--space-2);
-  margin-bottom: var(--space-2);
 }
 
 /* One family member: ribbon, cap, photo ball, name tag */
@@ -1792,8 +1871,8 @@ textarea.input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(var(--ornament-size) + var(--space-5));
-  padding-top: var(--space-5);
+  width: max(calc(var(--ornament-size) + var(--space-2)), 84px);
+  padding-top: calc(var(--ornament-size) * 0.18);
   color: inherit;
   text-decoration: none;
   transform-origin: 50% 0; /* swings from the top of its ribbon */
@@ -1816,7 +1895,7 @@ textarea.input {
   top: 0;
   left: 50%;
   width: 1px;
-  height: var(--space-5);
+  height: calc(var(--ornament-size) * 0.18);
   background: var(--tree-string);
   transform: translateX(-50%);
 }
@@ -1824,7 +1903,7 @@ textarea.input {
 .ornament-cap {
   position: relative;
   z-index: 1;
-  width: var(--space-4);
+  width: calc(var(--ornament-size) * 0.18);
   height: var(--space-2);
   margin-bottom: -2px;
   border-radius: 3px 3px 1px 1px;
@@ -1859,29 +1938,32 @@ textarea.input {
   object-fit: cover;
 }
 
+/* The tag tucks up over the bottom of the ball */
 .ornament-tag {
-  margin-top: var(--space-2);
-  padding: var(--space-1) var(--space-3);
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--ornament-size) * -0.1);
+  padding: 3px var(--space-2);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: var(--shadow-night);
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .ornament-name {
   display: block;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
 }
 
 .ornament-count {
   display: block;
-  min-height: 2.4em; /* two lines, reserved while counts load so the tree doesn't jump */
-  font-size: var(--font-size-xs);
+  min-height: 1.2em; /* reserved while counts load so the tree doesn't jump */
+  font-size: 11px;
   font-weight: var(--font-weight-medium);
   color: var(--color-text-muted);
-  white-space: nowrap;
 }
 
 /* Hovering (or tapping) an ornament sways it gently on its ribbon */
@@ -1909,20 +1991,40 @@ textarea.input {
 
 @media (min-width: 600px) {
   .tree-wrap {
+    --ornament-max: var(--ornament-size-large);
+    --tag-height: 44px;
     margin: 0;
     border-radius: var(--radius-lg);
   }
 
-  .tree {
-    max-width: 680px;
-  }
-
-  .ornament {
-    --ornament-size: var(--ornament-size-large);
-  }
-
   .tree-row {
     gap: var(--space-4);
+  }
+
+  .ornament-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .ornament-count {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (min-width: 1024px) {
+  .family-screen {
+    height: 100dvh;
+  }
+}
+
+/* Phone on its side: no banner, so the (two-row) tree gets the whole height */
+@media (orientation: landscape) and (max-height: 500px) {
+  .family-screen .hero {
+    display: none;
+  }
+
+  .family-screen .page {
+    padding-top: calc(var(--space-2) + env(safe-area-inset-top));
+    padding-bottom: var(--space-2);
   }
 }
 
@@ -2194,11 +2296,7 @@ textarea.input {
 }
 
 .question-for {
-  margin: 0 0 var(--space-2);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
+  font-weight: var(--font-weight-normal);
   color: var(--color-text-muted);
 }
 
@@ -2370,4 +2468,539 @@ textarea.input {
 
 .login-screen .back-button:hover {
   background: var(--color-glass);
+}
+
+/* ---------- Home: countdown ---------- */
+
+/* A card like the rest of the app, set on the Family tree's winter night,
+   with a candy-cane stripe down the left edge */
+.countdown {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto var(--space-5);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+  overflow: hidden;
+}
+
+.countdown::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: var(--candy-cane-width);
+  background: var(--candy-cane);
+}
+
+.countdown-sky {
+  position: relative;
+  min-height: 230px;
+  padding: var(--space-4) var(--space-4) var(--space-5) calc(var(--space-5) + var(--candy-cane-width));
+  display: flex;
+  align-items: flex-end;
+  background: var(--countdown-sky);
+  color: var(--countdown-text);
+  box-shadow: inset 0 -3px 0 var(--color-ribbon);
+}
+
+.countdown-moon {
+  position: absolute;
+  top: -48px;
+  right: -36px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--countdown-moon);
+  box-shadow: 0 0 80px 30px var(--countdown-moon-glow);
+}
+
+/* Santa crosses in front of the moon, drifting on the wind */
+.sleigh {
+  position: absolute;
+  top: 26px;
+  right: 0;
+  width: 270px;
+  overflow: visible;
+}
+
+.sleigh-body {
+  fill: var(--countdown-silhouette);
+  stroke: var(--countdown-silhouette);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.6;
+}
+
+.sleigh-line { fill: none; stroke-width: 1.5; }
+.sleigh-leg { fill: none; stroke-width: 2.4; }
+.sleigh-arm { fill: none; stroke-width: 4; }
+.sleigh-rein { fill: none; stroke-width: 1; }
+.sleigh-runner { fill: none; stroke-width: 2.6; }
+
+.sleigh-trail {
+  fill: none;
+  stroke: var(--countdown-gold);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+  opacity: 0.7;
+}
+
+.countdown-star {
+  position: absolute;
+  color: var(--countdown-gold);
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.countdown-star.s1 { top: 22px; left: 30px; font-size: 14px; }
+.countdown-star.s2 { top: 70px; left: 38%; font-size: 9px; }
+.countdown-star.s3 { top: 16px; left: 52%; font-size: 11px; }
+.countdown-star.s4 { top: 108px; left: 22px; font-size: 8px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .sleigh {
+    animation: sleigh-bob 6s ease-in-out infinite;
+  }
+
+  .sleigh-trail {
+    animation: sleigh-sparkle 1.6s linear infinite;
+  }
+
+  .countdown-star {
+    animation: star-twinkle 3s ease-in-out infinite;
+  }
+
+  .countdown-star.s2 { animation-delay: -1s; }
+  .countdown-star.s3 { animation-delay: -2s; }
+  .countdown-star.s4 { animation-delay: -0.5s; }
+}
+
+@keyframes sleigh-bob {
+  0%, 100% { transform: translate(0, 0) rotate(-3deg); }
+  50% { transform: translate(-8px, 6px) rotate(0deg); }
+}
+
+@keyframes sleigh-sparkle {
+  to { stroke-dashoffset: -16; }
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.3; }
+}
+
+.countdown-poster {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  column-gap: var(--space-3);
+  margin: 0;
+}
+
+.countdown-days {
+  grid-row: span 2;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+  font-size: var(--font-size-countdown);
+  line-height: 0.85;
+  color: var(--countdown-gold);
+}
+
+.countdown-words {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--space-1);
+}
+
+.countdown-sleeps {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+.countdown-til {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--countdown-gold);
+}
+
+.countdown-clock {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-width) solid var(--color-glass-border);
+  border-radius: var(--radius-round);
+  background: var(--color-glass);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-clock b {
+  font-weight: var(--font-weight-bold);
+}
+
+.countdown-done {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  color: var(--countdown-gold);
+}
+
+.countdown-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-3) calc(var(--space-4) + var(--candy-cane-width));
+  color: var(--color-text);
+}
+
+.countdown-sub-title {
+  font-weight: var(--font-weight-bold);
+}
+
+.countdown-sub-time {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+}
+
+@media (max-width: 380px) {
+  .sleigh { width: 225px; top: 20px; }
+  .countdown-moon { width: 170px; height: 170px; }
+}
+
+/* ---------- Shopping list: gag gift ---------- */
+
+.gag-gift {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border: 2px dashed var(--gag-border);
+  border-radius: var(--radius-lg);
+  background: var(--gag-bg);
+}
+
+.gag-gift-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.gag-gift h2 {
+  margin: 0;
+  font-size: var(--font-size-section);
+}
+
+.gag-gift-budget {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  color: var(--gag-text);
+}
+
+.gag-gift .shopping-row {
+  justify-content: space-between;
+}
+
+/* ---------- Home: the Cardi raffle ---------- */
+
+/* Same card as the countdown, in cranberry, with Cardi wrecking a present */
+.raffle {
+  max-width: 600px;
+  margin: 0 auto var(--space-5);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+  overflow: hidden;
+}
+
+.raffle-sky {
+  position: relative;
+  padding: var(--space-4) var(--space-4) var(--space-5) var(--space-5);
+  background: var(--raffle-bg);
+  color: var(--countdown-text);
+  box-shadow: inset 0 -3px 0 var(--color-ribbon);
+}
+
+/* Phones: the pile sits top right with the heading underneath.
+   Wider: heading on the left, pile on the right. */
+.raffle-head {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.raffle-head .raffle-scene {
+  align-self: flex-end;
+}
+
+@media (min-width: 480px) {
+  .raffle-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+}
+
+.raffle-head,
+.raffle-form,
+.raffle-owner,
+.raffle-sky .field-error {
+  position: relative;
+  z-index: 2;
+}
+
+/* Wrapping paper: little torn pieces in the app's Christmas colours */
+.wrap {
+  position: absolute;
+  display: block;
+}
+
+.wrap-stripe { background: var(--wrap-stripe); }
+.wrap-dots { background: var(--wrap-dots); }
+.wrap-green { background: var(--wrap-green); }
+.wrap-gold { background: var(--wrap-gold); }
+.wrap-cream { background: var(--wrap-cream); }
+.wrap-red { background: var(--wrap-red); }
+
+/* Torn paper already everywhere: along the floor and stuck around the card */
+.raffle-litter {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.raffle-litter .wrap {
+  opacity: 0.85;
+}
+
+/* The pile, with Cardi in front of it */
+.raffle-scene {
+  position: relative;
+  flex: none;
+  width: var(--raffle-cat-width);
+}
+
+.raffle-cat {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.raffle-cat .cat { fill: var(--raffle-cat); }
+.raffle-cat .cat-tail,
+.raffle-cat .cat-arm { fill: none; stroke: var(--raffle-cat); stroke-width: 6; stroke-linecap: round; }
+.raffle-cat .cat-eye { fill: var(--raffle-cat-eye); }
+.raffle-cat .cat-pupil { fill: var(--raffle-cat-pupil); }
+.raffle-cat .cat-nose { fill: var(--red-light); }
+.raffle-cat .gift-green { fill: var(--raffle-gift); }
+.raffle-cat .gift-gold { fill: var(--brass); }
+.raffle-cat .ribbon-gold { fill: var(--countdown-gold); }
+.raffle-cat .ribbon-green { fill: var(--evergreen); }
+.raffle-cat .gift-rip { fill: var(--raffle-gift-inside); }
+.raffle-cat .claw-marks { fill: none; stroke: var(--raffle-cat); stroke-width: 1.4; stroke-linecap: round; opacity: 0.8; }
+.raffle-cat .paper-white { fill: var(--white); }
+.raffle-cat .paper-red { fill: var(--red); }
+
+/* Shreds fly out from where Cardi's paws hit the pile */
+.raffle-shreds {
+  position: absolute;
+  left: 44%;
+  top: 48%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.raffle-shreds .shred {
+  transform: translate(var(--x), var(--y)) rotate(var(--r));
+  opacity: 0.9;
+}
+
+.raffle-cat .cat-arm,
+.raffle-cat .gift-shake,
+.raffle-cat .cat-bob,
+.raffle-cat .cat-tail {
+  transform-box: view-box;
+}
+
+.raffle-cat .paw-a { transform-origin: 40px 58px; }
+.raffle-cat .paw-b { transform-origin: 40px 66px; }
+.raffle-cat .cat-tail { transform-origin: 16px 86px; }
+.raffle-cat .gift-shake { transform-origin: 96px 94px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .raffle-cat .paw-a { animation: claw 0.18s ease-in-out infinite alternate; }
+  .raffle-cat .paw-b { animation: claw 0.18s ease-in-out -0.09s infinite alternate-reverse; }
+  .raffle-cat .cat-bob { animation: cat-bob 0.18s ease-in-out infinite alternate; }
+  .raffle-cat .cat-tail { animation: tail-lash 0.3s ease-in-out infinite alternate; }
+  .raffle-cat .shake-1 { animation: gift-shake 0.14s linear infinite; }
+  .raffle-cat .shake-2 { animation: gift-shake 0.16s linear -0.05s infinite; }
+  .raffle-cat .shake-3 { animation: gift-shake 0.12s linear -0.08s infinite; }
+  .raffle-cat .claw-marks { animation: claw-flash 0.18s steps(2) infinite; }
+
+  .raffle-shreds .shred {
+    opacity: 0;
+    animation-name: shred-fly;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+    animation-iteration-count: infinite;
+  }
+}
+
+@keyframes claw {
+  from { transform: rotate(-28deg); }
+  to { transform: rotate(14deg); }
+}
+
+@keyframes cat-bob {
+  from { transform: translate(0, 0) rotate(-2deg); }
+  to { transform: translate(1px, -1.5px) rotate(2deg); }
+}
+
+@keyframes tail-lash {
+  from { transform: rotate(-18deg); }
+  to { transform: rotate(14deg); }
+}
+
+@keyframes gift-shake {
+  0%, 100% { transform: none; }
+  25% { transform: translate(1px, -1px) rotate(1.5deg); }
+  75% { transform: translate(-1px, 0) rotate(-1.5deg); }
+}
+
+@keyframes claw-flash {
+  from { opacity: 0.9; }
+  to { opacity: 0.2; }
+}
+
+/* Out fast, then drift down and fade */
+@keyframes shred-fly {
+  0% { transform: translate(0, 0) rotate(0deg) scale(0.4); opacity: 1; }
+  65% { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1); opacity: 1; }
+  100% { transform: translate(var(--x), calc(var(--y) + 40px)) rotate(calc(var(--r) * 1.4)) scale(1); opacity: 0; }
+}
+
+.raffle-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+  font-size: var(--font-size-xl);
+  line-height: 1.1;
+}
+
+.raffle-form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.raffle-step {
+  flex: none;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: var(--border-width) solid var(--color-glass-border);
+  border-radius: var(--radius-round);
+  background: var(--color-glass);
+  color: var(--countdown-text);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.raffle-input {
+  width: 1.5em;
+  padding: 0;
+  border: none;
+  border-bottom: 2px dashed var(--countdown-gold);
+  background: none;
+  color: var(--countdown-gold);
+  font-family: var(--font-display);
+  font-size: var(--font-size-raffle);
+  line-height: 1.1;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.raffle-input::placeholder {
+  color: var(--countdown-gold);
+  opacity: 0.5;
+}
+
+.raffle-input:focus {
+  outline: none;
+  border-bottom-style: solid;
+}
+
+.raffle-input::-webkit-outer-spin-button,
+.raffle-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.raffle-save {
+  padding: 0 var(--space-3);
+}
+
+@media (max-width: 360px) {
+  .raffle-sky,
+  .raffle-entrants {
+    padding-left: var(--space-4);
+  }
+}
+
+.raffle-saved {
+  margin-left: var(--space-1);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--countdown-gold);
+}
+
+.raffle-owner {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.raffle-sky .field-error {
+  color: var(--red-light);
+}
+
+.raffle-entrants {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+}
+
+.raffle-faces {
+  display: flex;
+  padding-left: var(--space-2);
+}
+
+.raffle-face {
+  width: var(--raffle-face-size);
+  height: var(--raffle-face-size);
+  margin-left: calc(var(--space-2) * -1);
+  border-radius: var(--radius-round);
+  object-fit: cover;
+  box-shadow: 0 0 0 2px var(--color-surface);
 }

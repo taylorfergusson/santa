@@ -20,3 +20,14 @@ export const TREE_TOPPER = 'Laura'
 
 // Login emails are placeholders, e.g. taylor@feu.local
 export const emailFor = (slug) => `${slug}@feu.local`
+
+// Home page countdowns. Regina doesn't change clocks, so it's always UTC-6.
+export const CHRISTMAS_AT = `${YEAR}-12-25T00:00:00-06:00`
+export const ARRIVAL = { name: 'Taylor', at: `${YEAR}-12-17T01:20:00-06:00` }
+
+// Gag gift: everyone gets one, so it's pinned to the top of every Shopping list.
+export const GAG_GIFT = { budget: '$12', items: ['Silly socks', 'Silly snack'] }
+
+// The Cardi raffle on Home: closest guess wins a surprise prize.
+// `slug` is the person who can't enter (it's her cat). The database checks this too.
+export const RAFFLE = { owner: 'Jenn', slug: 'jenn', pet: 'Cardi' }

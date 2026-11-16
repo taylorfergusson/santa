@@ -93,7 +93,7 @@ function PasscodePad({ person, onBack }) {
   })
 
   return (
-    <div className="login-screen">
+    <div className="login-screen passcode-screen">
       <Snowfall />
       <div className="page login">
         <button className="back-button" onClick={onBack} aria-label="Back">
@@ -116,6 +116,7 @@ function PasscodePad({ person, onBack }) {
           {busy ? 'Checking…' : error}
         </p>
 
+        <div className="keypad-area">
         <div className="keypad">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((n) => (
             <button key={n} className="keypad-key" onClick={() => press(n)}>
@@ -129,6 +130,7 @@ function PasscodePad({ person, onBack }) {
           <button className="keypad-key keypad-delete" onClick={() => press('delete')} aria-label="Delete">
             <DeleteIcon />
           </button>
+        </div>
         </div>
       </div>
     </div>

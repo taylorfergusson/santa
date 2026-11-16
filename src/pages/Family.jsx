@@ -9,6 +9,20 @@ import treePhoto from '../assets/tree.webp'
 import Notices from '../components/Notices.jsx'
 import Snowfall from '../components/Snowfall.jsx'
 
+// Matches the sideways-phone rule in app.css
+const SIDEWAYS = '(orientation: landscape) and (max-height: 500px)'
+
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+  useEffect(() => {
+    const list = window.matchMedia(query)
+    const update = () => setMatches(list.matches)
+    list.addEventListener('change', update)
+    return () => list.removeEventListener('change', update)
+  }, [query])
+  return matches
+}
+
 // Ornament colours cycle so neighbours look different
 const ORNAMENT_STYLES = ['gold', 'red', 'silver', 'green']
 
@@ -29,16 +43,26 @@ export default function Family() {
     .filter((p) => p.id !== me.id)
     .sort((a, b) => isTopper(b) - isTopper(a) || a.name.localeCompare(b.name))
 
-  // Rows of 1, 2, 3... so the ornaments make a triangle like the tree
+  // Rows of 1, 2, 3... so the ornaments make a triangle like the tree.
+  // A phone on its side is too short for that, so it gets two wide rows instead.
+  const sideways = useMediaQuery(SIDEWAYS)
   const rows = []
-  for (let i = 0, size = 1; i < others.length; i += size, size++) rows.push(others.slice(i, i + size))
+  if (sideways) {
+    const half = Math.ceil(others.length / 2)
+    rows.push(others.slice(0, half), others.slice(half))
+  } else {
+    for (let i = 0, size = 1; i < others.length; i += size, size++) rows.push(others.slice(i, i + size))
+  }
+
+  // The tree sizes its ornaments from these so it always fits on screen
+  const shape = { '--rows': rows.length, '--cols': Math.max(1, ...rows.map((r) => r.length)) }
 
   return (
-    <>
+    <div className="family-screen">
       <Hero title="Family" />
       <div className="page">
         <Notices />
-        <div className="tree-wrap">
+        <div className="tree-wrap" style={shape}>
           <div className="tree">
             <img className="tree-photo" src={treePhoto} alt="" />
             {rows.map((row, r) => (
@@ -60,7 +84,7 @@ export default function Family() {
           <Snowfall />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -77,15 +101,7 @@ function Ornament({ person, count, loading, style, delay }) {
       <span className="ornament-tag">
         <span className="ornament-name">{person.name}</span>
         <span className="ornament-count">
-          {loading ? null : total ? (
-            <>
-              {total} {total === 1 ? 'wish' : 'wishes'}
-              <br />
-              {taken} claimed
-            </>
-          ) : (
-            'No wishes yet'
-          )}
+          {loading ? null : total ? `${taken} of ${total} claimed` : 'No wishes yet'}
         </span>
       </span>
     </Link>

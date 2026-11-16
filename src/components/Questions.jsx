@@ -102,10 +102,12 @@ function Question({ question: q, forName, canAnswer, onChange, onPhoto }) {
 
   return (
     <li className="question">
-      {forName && <p className="question-for">For {forName}</p>}
       <p className="question-body">
         <span className="question-mark">Q</span>
-        {q.body}
+        <span>
+          {q.body}
+          {forName && <span className="question-for"> · for {forName}</span>}
+        </span>
       </p>
       <PhotoRow photos={q.photos} onPhoto={onPhoto} />
 

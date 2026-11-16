@@ -87,13 +87,14 @@ export function claimInfo(item) {
   if (!s || !s.claim_count) return { text: '', dimmed: false }
   const exact = item.type === 'exact'
   if (s.my_stage) {
-    const stage = s.my_stage === 'bought' ? 'Bought' : 'Planning'
-    return { text: `${exact ? 'You\'re getting this' : 'You\'re getting one'} · ${stage}`, dimmed: false }
+    const bought = s.my_stage === 'bought'
+    const text = exact ? (bought ? 'You got this!' : "You're getting this") : bought ? 'You got one!' : "You're getting one"
+    return { text, dimmed: false }
   }
   if (exact) {
     return { text: `Someone's getting this · ${s.bought_count ? 'Bought' : 'Planning'}`, dimmed: true }
   }
-  return { text: 'Someone\'s getting one, more welcome', dimmed: false }
+  return { text: "Someone's getting one, more are welcome", dimmed: false }
 }
 
 // ---------- Questions ----------
@@ -108,16 +109,6 @@ export async function loadQuestions(profileId) {
     .order('created_at', { ascending: false })
   if (error) throw error
   return data
-}
-
-// How many unanswered questions are waiting on these profiles (yours + managed)
-export async function countWaitingQuestions(profileIds) {
-  const { count } = await supabase
-    .from('questions_public')
-    .select('id', { count: 'exact', head: true })
-    .in('profile_id', profileIds)
-    .is('answer', null)
-  return count ?? 0
 }
 
 // The unanswered questions waiting on these profiles (yours + managed), oldest first

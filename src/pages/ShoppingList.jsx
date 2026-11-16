@@ -3,13 +3,62 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth.jsx'
 import { supabase } from '../supabase.js'
 import { editedAfterClaim } from '../items.js'
+import { GAG_GIFT } from '../config.js'
 import Photo from '../components/Photo.jsx'
 import Hero from '../components/Hero.jsx'
+
+// Everyone brings a gag gift. The checkmarks are saved on this device only.
+function GagGift({ userId }) {
+  const key = `gag-gift-${userId}`
+  const [done, setDone] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(key)) ?? []
+    } catch {
+      return []
+    }
+  })
+
+  const toggle = (name) => {
+    const next = done.includes(name) ? done.filter((n) => n !== name) : [...done, name]
+    setDone(next)
+    try {
+      localStorage.setItem(key, JSON.stringify(next))
+    } catch {
+      // private browsing: it just won't be remembered
+    }
+  }
+
+  return (
+    <section className="gag-gift">
+      <div className="gag-gift-head">
+        <h2>🎭 Gag gift</h2>
+        <p className="gag-gift-budget">Budget: {GAG_GIFT.budget}</p>
+      </div>
+      <ul className="shopping-rows">
+        {GAG_GIFT.items.map((name) => {
+          const bought = done.includes(name)
+          return (
+            <li key={name} className="shopping-row">
+              <span className="shopping-item-name">{name}</span>
+              <button
+                className={`stage-button${bought ? ' bought' : ''}`}
+                onClick={() => toggle(name)}
+                aria-label={bought ? `${name}: bought. Tap to undo` : `${name}: tap to mark as bought`}
+              >
+                {bought ? '✓ Bought' : 'To buy'}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
 
 // Everything you've claimed, grouped by whose list it's on.
 // Tap the stage to switch between Planning and Bought; tap the row to open the item.
 export default function ShoppingList() {
-  const { people } = useAuth()
+  const { me, people } = useAuth()
   const [claims, setClaims] = useState(null)
   const [error, setError] = useState('')
 
@@ -63,6 +112,8 @@ export default function ShoppingList() {
       </Hero>
       <div className="page">
         {error && <p className="banner">{error}</p>}
+
+        <GagGift userId={me.id} />
 
         {!claims.length && (
           <p className="empty">
